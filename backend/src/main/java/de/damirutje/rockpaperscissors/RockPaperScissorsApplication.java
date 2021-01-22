@@ -4,12 +4,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Entry point for {@link Application}
+ * Entry point for {@link RockPaperScissorsApplication}
  */
 @SpringBootApplication
-public class Application {
+public class RockPaperScissorsApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(RockPaperScissorsApplication.class, args);
 	}
 }

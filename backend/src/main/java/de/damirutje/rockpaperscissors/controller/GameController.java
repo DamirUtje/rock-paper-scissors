@@ -1,18 +1,27 @@
 package de.damirutje.rockpaperscissors.controller;
 
+import de.damirutje.rockpaperscissors.model.Game;
 import de.damirutje.rockpaperscissors.model.HandShape;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import de.damirutje.rockpaperscissors.service.IGameService;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class GameController {
 
-    @GetMapping("/move")
-    public String move(@RequestParam(value = "shape", defaultValue = "1") int shape) {
+    private final IGameService gameService;
 
-        var handShape = HandShape.fromInt(shape);
-
-        return String.format("My hand shape %s!", handShape);
+    public GameController(IGameService gameService) {
+        this.gameService = gameService;
     }
+
+    @PostMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Game> move(@RequestBody HandShape userShape) {
+
+        Game currentGame = gameService.getCurrentGame(userShape);
+
+        return ResponseEntity.ok().body(currentGame);
+    }
+
 }
