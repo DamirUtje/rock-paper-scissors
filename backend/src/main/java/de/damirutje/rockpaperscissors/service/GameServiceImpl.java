@@ -1,7 +1,8 @@
 package de.damirutje.rockpaperscissors.service;
 
+import de.damirutje.rockpaperscissors.RockPaperScissorsApplication;
 import de.damirutje.rockpaperscissors.model.Game;
-import de.damirutje.rockpaperscissors.model.HandShape;
+import de.damirutje.rockpaperscissors.model.HandSign;
 import de.damirutje.rockpaperscissors.model.Move;
 import de.damirutje.rockpaperscissors.model.Result;
 import org.springframework.stereotype.Service;
@@ -11,24 +12,24 @@ import java.util.Random;
 public class GameServiceImpl implements IGameService {
 
     @Override
-    public Game getCurrentGame(HandShape handShape) {
+    public Game getCurrentGame(HandSign handSign) {
 
-        Move currentMove = getCurrentMove(handShape);
+        Move currentMove = getCurrentMove(handSign);
         Game currentGame = new Game();
         currentGame.setCurrentMove(currentMove);
 
         return currentGame;
     }
 
-    private Move getCurrentMove(HandShape userShape) {
+    private Move getCurrentMove(HandSign userSign) {
 
-        HandShape botShape = getBotHandShape();
-        Result result = getUserResult(userShape, botShape);
+        HandSign botSign = getBotSign();
+        Result result = getUserResult(userSign, botSign);
 
-        return new Move(userShape, botShape, result);
+        return new Move(userSign, botSign, result);
     }
 
-    private Result getUserResult(HandShape userShape, HandShape botShape) {
+    private Result getUserResult(HandSign userShape, HandSign botShape) {
         var result = Result.Draw;
 
         if (userShape.isBetterThan(botShape)) {
@@ -41,14 +42,14 @@ public class GameServiceImpl implements IGameService {
     }
 
     /**
-     * Pick a random value of the HandShape enum.
-     * @return a random HandShape.
+     * Pick a random value of the {@link HandSign} enum.
+     * @return a random {@link HandSign}.
      */
-    private HandShape getBotHandShape() {
+    private HandSign getBotSign() {
 
         // handle Well...
         Random random = new Random();
-        var handShapes = HandShape.values();
-        return handShapes[random.nextInt(handShapes.length)];
+        var handSigns = HandSign.values();
+        return handSigns[random.nextInt(handSigns.length)];
     }
 }

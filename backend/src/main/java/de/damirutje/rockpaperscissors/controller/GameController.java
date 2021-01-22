@@ -1,7 +1,7 @@
 package de.damirutje.rockpaperscissors.controller;
 
 import de.damirutje.rockpaperscissors.model.Game;
-import de.damirutje.rockpaperscissors.model.HandShape;
+import de.damirutje.rockpaperscissors.model.HandSign;
 import de.damirutje.rockpaperscissors.service.IGameService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ public class GameController {
     }
 
     @PostMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Game> move(@RequestBody HandShape userShape) {
+    public ResponseEntity<Game> move(@RequestBody HandSign userShape) {
 
         Game currentGame = gameService.getCurrentGame(userShape);
 

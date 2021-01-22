@@ -1,6 +1,6 @@
 package de.damirutje.rockpaperscissors.model;
 
-public enum MoveResult {
+public enum Result {
 
     Win, Loose, Draw
 }
