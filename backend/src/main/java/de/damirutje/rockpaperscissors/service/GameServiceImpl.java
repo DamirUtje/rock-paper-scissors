@@ -1,24 +1,60 @@
 package de.damirutje.rockpaperscissors.service;
 
-import de.damirutje.rockpaperscissors.RockPaperScissorsApplication;
-import de.damirutje.rockpaperscissors.model.Game;
-import de.damirutje.rockpaperscissors.model.HandSign;
-import de.damirutje.rockpaperscissors.model.Move;
-import de.damirutje.rockpaperscissors.model.Result;
+import de.damirutje.rockpaperscissors.dto.NewGameDto;
+import de.damirutje.rockpaperscissors.model.*;
+import de.damirutje.rockpaperscissors.repository.IGameRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
 public class GameServiceImpl implements IGameService {
 
-    @Override
-    public Game getCurrentGame(HandSign handSign) {
+    private final IGameRepository gameRepository;
 
-        Move currentMove = getCurrentMove(handSign);
-        Game currentGame = new Game();
-        currentGame.setCurrentMove(currentMove);
+    @Autowired
+    public GameServiceImpl(IGameRepository gameRepository) {
+        this.gameRepository = gameRepository;
+    }
+
+    @Override
+    public Game getCurrentGame(long gameId, HandSign handSign) {
+
+        Game currentGame = null;
+        Optional<Game> dbGame = this.gameRepository.findById(gameId);
+
+        if (dbGame.isPresent()) {
+
+            Move move = getCurrentMove(handSign);
+            currentGame = dbGame.get();
+
+        }  else {
+            //throw new Exception("Not found");
+        }
 
         return currentGame;
+    }
+
+    @Override
+    public long startGameDefault() {
+
+        Game game = new Game(Mode.Classic, 3);
+
+        return this.getPersistedGameId(game);
+    }
+
+    @Override
+    public long startGame(NewGameDto newGameDto) {
+
+        Game game = new Game(newGameDto.getMode(), newGameDto.getRounds());
+
+        return this.getPersistedGameId(game);
+    }
+
+    private long getPersistedGameId(Game game) {
+        Game persistedGame = this.gameRepository.save(game);
+        return persistedGame.getId();
     }
 
     private Move getCurrentMove(HandSign userSign) {
