@@ -1,8 +1,9 @@
 package de.damirutje.rockpaperscissors.service;
 
-import de.damirutje.rockpaperscissors.dto.NewGameDto;
+import de.damirutje.rockpaperscissors.dto.GameStartDto;
 import de.damirutje.rockpaperscissors.model.*;
 import de.damirutje.rockpaperscissors.repository.IGameRepository;
+import de.damirutje.rockpaperscissors.repository.IMoveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
@@ -12,44 +13,41 @@ import java.util.Random;
 public class GameServiceImpl implements IGameService {
 
     private final IGameRepository gameRepository;
+    private final IMoveRepository moveRepository;
 
     @Autowired
-    public GameServiceImpl(IGameRepository gameRepository) {
+    public GameServiceImpl(IGameRepository gameRepository,
+                           IMoveRepository moveRepository) {
         this.gameRepository = gameRepository;
+        this.moveRepository = moveRepository;
     }
 
     @Override
-    public Game getCurrentGame(long gameId, HandSign handSign) {
-
-        Game currentGame = null;
-        Optional<Game> dbGame = this.gameRepository.findById(gameId);
-
-        if (dbGame.isPresent()) {
-
-            Move move = getCurrentMove(handSign);
-            currentGame = dbGame.get();
-
-        }  else {
-            //throw new Exception("Not found");
-        }
-
-        return currentGame;
+    public Game getGame(long id) {
+        return this.getGameFromDb(id);
     }
 
     @Override
-    public long startGameDefault() {
-
-        Game game = new Game(Mode.Classic, 3);
-
+    public long startGame() {
+        Game game = new Game(GameMode.Classic, 3);
         return this.getPersistedGameId(game);
     }
 
     @Override
-    public long startGame(NewGameDto newGameDto) {
-
-        Game game = new Game(newGameDto.getMode(), newGameDto.getRounds());
-
+    public long startGame(GameStartDto gameStartDto) {
+        Game game = new Game(gameStartDto.getMode(), gameStartDto.getRounds());
         return this.getPersistedGameId(game);
+    }
+
+    @Override
+    public Game makeMove(long gameId, HandSign handSign) {
+        Game game = this.getGameFromDb(gameId);
+        if (game.getState() == GameState.Started) {
+            Move move = this.getMove(game, handSign);
+            game.setCurrentMove(move);
+            this.gameRepository.save(game);
+        } // else throw Exception
+        return game;
     }
 
     private long getPersistedGameId(Game game) {
@@ -57,15 +55,25 @@ public class GameServiceImpl implements IGameService {
         return persistedGame.getId();
     }
 
-    private Move getCurrentMove(HandSign userSign) {
+    private Game getGameFromDb(long gameId) {
+        Game game = null;
+        Optional<Game> dbGame = this.gameRepository.findById(gameId);
 
-        HandSign botSign = getBotSign();
-        Result result = getUserResult(userSign, botSign);
-
-        return new Move(userSign, botSign, result);
+        if (dbGame.isPresent()) {
+            game = dbGame.get();
+        } // throw new Exception("Not found");
+        return game;
     }
 
-    private Result getUserResult(HandSign userShape, HandSign botShape) {
+    private Move getMove(Game game, HandSign userSign) {
+        HandSign botSign = getBotSign(game);
+        Result result = getMoveResult(userSign, botSign);
+        Move move = new Move(userSign, botSign, result);
+        this.moveRepository.save(move);
+        return move;
+    }
+
+    private Result getMoveResult(HandSign userShape, HandSign botShape) {
         var result = Result.Draw;
 
         if (userShape.isBetterThan(botShape)) {
@@ -73,19 +81,12 @@ public class GameServiceImpl implements IGameService {
         } else if(botShape.isBetterThan(userShape)) {
             result = Result.Loose;
         }
-
         return result;
     }
 
-    /**
-     * Pick a random value of the {@link HandSign} enum.
-     * @return a random {@link HandSign}.
-     */
-    private HandSign getBotSign() {
-
-        // handle Well...
+    private HandSign getBotSign(Game game) {
         Random random = new Random();
-        var handSigns = HandSign.values();
+        HandSign[] handSigns = game.getAvailableSigns();
         return handSigns[random.nextInt(handSigns.length)];
     }
 }

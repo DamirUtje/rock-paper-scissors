@@ -1,6 +1,6 @@
 package de.damirutje.rockpaperscissors.controller;
 
-import de.damirutje.rockpaperscissors.dto.NewGameDto;
+import de.damirutje.rockpaperscissors.dto.GameStartDto;
 import de.damirutje.rockpaperscissors.model.Game;
 import de.damirutje.rockpaperscissors.model.HandSign;
 import de.damirutje.rockpaperscissors.service.IGameService;
@@ -22,21 +22,37 @@ public class GameController {
         this.gameService = gameService;
     }
 
+
     /**
-     * Creates a new {@link Game} instance for game start in the database.
-     * @param newGameDto of the new {@link Optional<NewGameDto>}
+     * Returns requested {@link Game} from database.
+     * @param id of the requested {@link Game}
+     * @return the requested {@link Game}
+     * @throws Exception if the requested {@link Game} does not exist
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("{id}")
+    public ResponseEntity<Game> getGame(@PathVariable long id) {
+        Game game = this.gameService.getGame(id);
+        return ResponseEntity.ok(game);
+    }
+
+
+    /**
+     * Creates a new {@link Game} for game start in the database.
+     * @param gameStartDto of the new {@link Optional<GameStartDto>}
      * @return {@link ResponseEntity} with path to the created game in the location tag
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("start")
-    public ResponseEntity<?> start(@RequestBody Optional<NewGameDto> newGameDto,
+    public ResponseEntity<?> start(@RequestBody Optional<GameStartDto> gameStartDto,
                                     UriComponentsBuilder uriBuilder) {
+        long gameId = gameStartDto
+                .map(this.gameService::startGame)
+                .orElseGet(this.gameService::startGame);
 
-        long gameId =
-                newGameDto.map(this.gameService::startGame).orElseGet(this.gameService::startGameDefault);
-
-        UriComponents uriComponents =
-                uriBuilder.path("/game/{id}").buildAndExpand(gameId);
+        UriComponents uriComponents = uriBuilder
+                .path("/game/{id}")
+                .buildAndExpand(gameId);
 
         return ResponseEntity.created(uriComponents.toUri()).build();
     }
@@ -49,13 +65,13 @@ public class GameController {
      * @return the requested {@link Game}
      * @throws Exception if the requested {@link Game} does not exist
      */
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping("{id}/move")
     public ResponseEntity<Game> move(@PathVariable long id,
                                      @RequestBody HandSign userShape) {
+        Game game = this.gameService.makeMove(id, userShape);
 
-        Game currentGame = gameService.getCurrentGame(id, userShape);
-
-        return ResponseEntity.ok().body(currentGame);
+        return ResponseEntity.ok(game);
     }
 
 }

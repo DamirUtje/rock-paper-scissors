@@ -28,5 +28,4 @@ public enum HandSign {
     };
 
     public abstract boolean isBetterThan(HandSign move);
-
 }

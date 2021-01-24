@@ -1,5 +1,6 @@
 package de.damirutje.rockpaperscissors.model;
 
-public enum Mode {
-    Classic, Expanded
+public enum GameState {
+
+    Started, Finished
 }
