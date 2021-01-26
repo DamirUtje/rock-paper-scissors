@@ -4,29 +4,21 @@ import de.damirutje.rockpaperscissors.model.GameMode;
 
 public class GameStartDto {
     private GameMode mode;
-    private int rounds;
+    private int bestOfRounds;
 
     public GameStartDto() {
     }
 
-    public GameStartDto(GameMode mode, int rounds) {
+    public GameStartDto(GameMode mode, int bestOfRounds) {
         this.mode = mode;
-        this.rounds = rounds;
+        this.bestOfRounds = bestOfRounds;
     }
 
     public GameMode getMode() {
         return mode;
     }
 
-    public void setMode(GameMode mode) {
-        this.mode = mode;
-    }
-
-    public int getRounds() {
-        return rounds;
-    }
-
-    public void setRounds(int rounds) {
-        this.rounds = rounds;
+    public int getBestOfRounds() {
+        return bestOfRounds;
     }
 }

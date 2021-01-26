@@ -13,14 +13,14 @@ public class Move {
     private long id;
     private HandSign userSign;
     private HandSign botSign;
-    private Result result;
+    private MoveResult result;
     private int round;
 
     public Move() {
         super();
     }
 
-    public Move(HandSign userSign, HandSign botSign, Result result) {
+    public Move(HandSign userSign, HandSign botSign, MoveResult result) {
         this.userSign = userSign;
         this.botSign = botSign;
         this.result = result;
@@ -54,11 +54,11 @@ public class Move {
         this.botSign = botSign;
     }
 
-    public Result getResult() {
+    public MoveResult getResult() {
         return result;
     }
 
-    public void setResult(Result result) {
+    public void setResult(MoveResult result) {
         this.result = result;
     }
 

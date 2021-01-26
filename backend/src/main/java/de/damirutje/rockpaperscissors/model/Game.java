@@ -2,7 +2,6 @@ package de.damirutje.rockpaperscissors.model;
 
 import org.apache.commons.lang3.ArrayUtils;
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -13,15 +12,11 @@ public class Game {
     @GeneratedValue
     private long id;
     private GameMode mode;
-    private int rounds;
-    private GameState state;
+    private int bestOfRounds;
     @ElementCollection
-    private final Set<Move> moves = new HashSet<>();
+    private Set<Move> moves;
+    private GameState state;
 
-    @Transient
-    private Result result;
-    @Transient
-    private Move currentMove;
     @Transient
     private HandSign[] availableSigns;
 
@@ -29,9 +24,9 @@ public class Game {
         super();
     }
 
-    public Game(GameMode mode, int rounds) {
+    public Game(GameMode mode, int bestOfRounds) {
         this.mode = mode;
-        this.rounds = rounds;
+        this.bestOfRounds = bestOfRounds;
         this.state = GameState.Started;
     }
 
@@ -43,52 +38,31 @@ public class Game {
         return this.mode;
     }
 
-    public int getRounds() {
-        return this.rounds;
-    }
-
-    public GameState getState() {
-        return this.state;
+    public int getBestOfRounds() {
+        return this.bestOfRounds;
     }
 
     public Set<Move> getMoves() {
         return this.moves;
     }
 
-    public Move getCurrentMove() {
-        return this.currentMove;
+    public GameState getState() {
+        return this.state;
+    }
+
+    public void setState(GameState state) {
+        this.state = state;
     }
 
     public void setCurrentMove(Move currentMove) {
-        if (this.moves.size() < this.rounds) {
-            this.currentMove = currentMove;
+        if (this.moves.size() < this.bestOfRounds) {
             this.moves.add(currentMove);
             currentMove.setRound(this.moves.size());
         }
 
-        if (currentMove.getRound() >= this.rounds) {
+        if (currentMove.getRound() >= this.bestOfRounds) {
             this.state = GameState.Finished;
         }
-    }
-
-    public Result getResult() {
-        if (this.state == GameState.Finished) {
-            long winsCount = this.moves.stream()
-                    .filter(move -> move.getResult().equals(Result.Win))
-                    .count();
-
-            long loosesCount = this.moves.stream()
-                    .filter(move -> move.getResult().equals(Result.Loose))
-                    .count();
-
-            this.result = Result.Draw;
-            if (winsCount > loosesCount) {
-                this.result = Result.Win;
-            } else if(winsCount < loosesCount) {
-                this.result = Result.Loose;
-            }
-        }
-        return result;
     }
 
     public HandSign[] getAvailableSigns() {
@@ -100,25 +74,23 @@ public class Game {
         return this.availableSigns;
     }
 
-    // TODO: overwrite hashCode, equals, toString
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
-        return id == game.id && rounds == game.rounds && mode == game.mode;
+        return id == game.id && bestOfRounds == game.bestOfRounds && mode == game.mode;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, mode, rounds);
+        return Objects.hash(id, mode, bestOfRounds);
     }
 
     @Override
     public String toString() {
         return String.format(
                 "Game[id=%d, mode='%s', rounds='%s']",
-                id, mode, rounds);
+                id, mode, bestOfRounds);
     }
 }

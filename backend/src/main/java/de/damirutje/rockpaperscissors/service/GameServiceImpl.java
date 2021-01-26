@@ -35,7 +35,7 @@ public class GameServiceImpl implements IGameService {
 
     @Override
     public long startGame(GameStartDto gameStartDto) {
-        Game game = new Game(gameStartDto.getMode(), gameStartDto.getRounds());
+        Game game = new Game(gameStartDto.getMode(), gameStartDto.getBestOfRounds());
         return this.getPersistedGameId(game);
     }
 
@@ -50,14 +50,21 @@ public class GameServiceImpl implements IGameService {
         return game;
     }
 
+    @Override
+    public void abortGame(long id) {
+        Game game = this.getGameFromDb(id);
+        game.setState(GameState.Aborted);
+        this.gameRepository.save(game);
+    }
+
     private long getPersistedGameId(Game game) {
         Game persistedGame = this.gameRepository.save(game);
         return persistedGame.getId();
     }
 
-    private Game getGameFromDb(long gameId) {
+    private Game getGameFromDb(long id) {
         Game game = null;
-        Optional<Game> dbGame = this.gameRepository.findById(gameId);
+        Optional<Game> dbGame = this.gameRepository.findById(id);
 
         if (dbGame.isPresent()) {
             game = dbGame.get();
@@ -67,19 +74,19 @@ public class GameServiceImpl implements IGameService {
 
     private Move getMove(Game game, HandSign userSign) {
         HandSign botSign = getBotSign(game);
-        Result result = getMoveResult(userSign, botSign);
+        MoveResult result = getMoveResult(userSign, botSign);
         Move move = new Move(userSign, botSign, result);
         this.moveRepository.save(move);
         return move;
     }
 
-    private Result getMoveResult(HandSign userShape, HandSign botShape) {
-        var result = Result.Draw;
+    private MoveResult getMoveResult(HandSign userShape, HandSign botShape) {
+        var result = MoveResult.Draw;
 
         if (userShape.isBetterThan(botShape)) {
-            result = Result.Win;
+            result = MoveResult.Win;
         } else if(botShape.isBetterThan(userShape)) {
-            result = Result.Loose;
+            result = MoveResult.Loose;
         }
         return result;
     }

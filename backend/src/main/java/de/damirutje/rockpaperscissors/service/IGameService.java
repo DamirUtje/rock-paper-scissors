@@ -7,13 +7,6 @@ import de.damirutje.rockpaperscissors.model.HandSign;
 public interface IGameService {
 
     /**
-     * Requests {@link Game} entity from database by specified id.
-     * @param id of requested {@link Game}
-     * @return requested {@link Game}
-     */
-    Game getGame(long id);
-
-    /**
      * Creates and starts a new {@link Game}.
      * @return id of created {@link Game}
      */
@@ -26,5 +19,14 @@ public interface IGameService {
      */
     long startGame(GameStartDto gameStartDto);
 
+    /**
+     * Requests {@link Game} entity from database by specified id.
+     * @param id of requested {@link Game}
+     * @return requested {@link Game}
+     */
+    Game getGame(long id);
+
     Game makeMove(long gameId, HandSign handSign);
+
+    void abortGame(long id);
 }
