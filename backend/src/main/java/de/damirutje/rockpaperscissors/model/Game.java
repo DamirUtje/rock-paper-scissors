@@ -2,6 +2,8 @@ package de.damirutje.rockpaperscissors.model;
 
 import org.apache.commons.lang3.ArrayUtils;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 import java.util.Set;
 
@@ -11,10 +13,15 @@ public class Game {
     @Id
     @GeneratedValue
     private long id;
+    @NotNull
     private GameMode mode;
+    @NotNull
+    @Size(min = 1) // TODO: only odd
     private int bestOfRounds;
+    @NotNull
     @ElementCollection
     private Set<Move> moves;
+    @NotNull
     private GameState state;
 
     @Transient
@@ -52,17 +59,6 @@ public class Game {
 
     public void setState(GameState state) {
         this.state = state;
-    }
-
-    public void setCurrentMove(Move currentMove) {
-        if (this.moves.size() < this.bestOfRounds) {
-            this.moves.add(currentMove);
-            currentMove.setRound(this.moves.size());
-        }
-
-        if (currentMove.getRound() >= this.bestOfRounds) {
-            this.state = GameState.Finished;
-        }
     }
 
     public HandSign[] getAvailableSigns() {

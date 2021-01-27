@@ -3,7 +3,7 @@ package de.damirutje.rockpaperscissors.controller;
 import de.damirutje.rockpaperscissors.dto.GameStartDto;
 import de.damirutje.rockpaperscissors.model.Game;
 import de.damirutje.rockpaperscissors.model.HandSign;
-import de.damirutje.rockpaperscissors.service.IGameService;
+import de.damirutje.rockpaperscissors.service.GameService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +16,9 @@ import java.util.Optional;
 @RequestMapping("/api/game")
 public class GameController {
 
-    private final IGameService gameService;
+    private final GameService gameService;
 
-    public GameController(IGameService gameService) {
+    public GameController(GameService gameService) {
         this.gameService = gameService;
     }
 

@@ -3,6 +3,7 @@ package de.damirutje.rockpaperscissors.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
@@ -11,9 +12,13 @@ public class Move {
     @Id
     @GeneratedValue
     private long id;
+    @NotNull
     private HandSign userSign;
+    @NotNull
     private HandSign botSign;
+    @NotNull
     private MoveResult result;
+    @NotNull
     private int round;
 
     public Move() {

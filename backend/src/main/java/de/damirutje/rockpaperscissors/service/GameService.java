@@ -4,7 +4,7 @@ import de.damirutje.rockpaperscissors.dto.GameStartDto;
 import de.damirutje.rockpaperscissors.model.Game;
 import de.damirutje.rockpaperscissors.model.HandSign;
 
-public interface IGameService {
+public interface GameService {
 
     /**
      * Creates and starts a new {@link Game}.
@@ -26,7 +26,17 @@ public interface IGameService {
      */
     Game getGame(long id);
 
+    /**
+     * Makes and persists the move for requested {@link Game} entity.
+     * @param gameId id of requested {@link Game}
+     * @param handSign to make move with
+     * @return {@link Game} after move
+     */
     Game makeMove(long gameId, HandSign handSign);
 
+    /**
+     * Sets game state for requested {@link Game} entity to 'Aborted'.
+     * @param id of requested {@link Game} to abort
+     */
     void abortGame(long id);
 }

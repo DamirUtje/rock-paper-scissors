@@ -2,22 +2,22 @@ package de.damirutje.rockpaperscissors.service;
 
 import de.damirutje.rockpaperscissors.dto.GameStartDto;
 import de.damirutje.rockpaperscissors.model.*;
-import de.damirutje.rockpaperscissors.repository.IGameRepository;
-import de.damirutje.rockpaperscissors.repository.IMoveRepository;
+import de.damirutje.rockpaperscissors.repository.GameRepository;
+import de.damirutje.rockpaperscissors.repository.MoveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.Random;
 
 @Service
-public class GameServiceImpl implements IGameService {
+public class GameServiceImpl implements GameService {
 
-    private final IGameRepository gameRepository;
-    private final IMoveRepository moveRepository;
+    private final GameRepository gameRepository;
+    private final MoveRepository moveRepository;
 
     @Autowired
-    public GameServiceImpl(IGameRepository gameRepository,
-                           IMoveRepository moveRepository) {
+    public GameServiceImpl(GameRepository gameRepository,
+                           MoveRepository moveRepository) {
         this.gameRepository = gameRepository;
         this.moveRepository = moveRepository;
     }
@@ -44,7 +44,7 @@ public class GameServiceImpl implements IGameService {
         Game game = this.getGameFromDb(gameId);
         if (game.getState() == GameState.Started) {
             Move move = this.getMove(game, handSign);
-            game.setCurrentMove(move);
+            this.setCurrentMove(game, move);
             this.gameRepository.save(game);
         } // else throw Exception
         return game;
@@ -55,6 +55,17 @@ public class GameServiceImpl implements IGameService {
         Game game = this.getGameFromDb(id);
         game.setState(GameState.Aborted);
         this.gameRepository.save(game);
+    }
+
+    private void setCurrentMove(Game game, Move currentMove) {
+        if (game.getMoves().size() < game.getBestOfRounds()) {
+            game.getMoves().add(currentMove);
+            currentMove.setRound(game.getMoves().size());
+        }
+
+        if (currentMove.getRound() >= game.getBestOfRounds()) {
+            game.setState(GameState.Finished);
+        }
     }
 
     private long getPersistedGameId(Game game) {
