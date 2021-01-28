@@ -1,6 +1,6 @@
 # Rock-Paper-Scissors
 
-This repository contains an implementation of the Rock-Paper-Scissors game. Its backend provides a RESTful API service which is based on Spring Boot. The associated frontend is implemented with Angular8.
+This repository contains an implementation of the Rock-Paper-Scissors game. Its backend provides a RESTful API service which is based on Spring Boot. The associated frontend is implemented with Angular 11.
 
 ## Rules
 
