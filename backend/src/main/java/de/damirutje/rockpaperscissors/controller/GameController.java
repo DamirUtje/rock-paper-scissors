@@ -42,7 +42,6 @@ public class GameController {
      * Returns requested {@link Game} from database.
      * @param id of the requested {@link Game}
      * @return the requested {@link Game}
-     * @throws Exception if the requested {@link Game} does not exist
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("{id}")
@@ -55,12 +54,10 @@ public class GameController {
      * Creates a game move and returns a {@link Game}
      * @param id of the requested {@link Game}
      * @return the requested {@link Game}
-     * @throws Exception if the requested {@link Game} does not exist
      */
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("{id}/move")
-    public ResponseEntity<Game> move(@PathVariable long id,
-                                     @RequestBody HandSign userShape) {
+    public ResponseEntity<Game> move(@PathVariable long id, @RequestBody HandSign userShape) {
         Game game = this.gameService.makeMove(id, userShape);
 
         return ResponseEntity.ok(game);

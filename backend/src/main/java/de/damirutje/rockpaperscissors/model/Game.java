@@ -3,7 +3,7 @@ package de.damirutje.rockpaperscissors.model;
 import org.apache.commons.lang3.ArrayUtils;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,14 +15,11 @@ public class Game {
     private long id;
     @NotNull
     private GameMode mode;
-    @NotNull
-    @Size(min = 1) // TODO: only odd
     private int bestOfRounds;
-    @NotNull
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<Move> moves;
     @NotNull
-    private GameState state;
+    private  GameState state;
 
     @Transient
     private HandSign[] availableSigns;
@@ -34,6 +31,7 @@ public class Game {
     public Game(GameMode mode, int bestOfRounds) {
         this.mode = mode;
         this.bestOfRounds = bestOfRounds;
+        this.moves = new HashSet<>();
         this.state = GameState.Started;
     }
 
@@ -86,7 +84,7 @@ public class Game {
     @Override
     public String toString() {
         return String.format(
-                "Game[id=%d, mode='%s', rounds='%s']",
-                id, mode, bestOfRounds);
+                "Game[id=%d, mode='%s', bestOfRounds='%s', state='%s']",
+                id, mode, bestOfRounds, state);
     }
 }

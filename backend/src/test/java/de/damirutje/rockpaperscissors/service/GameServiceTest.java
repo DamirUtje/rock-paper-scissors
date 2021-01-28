@@ -1,12 +1,15 @@
 package de.damirutje.rockpaperscissors.service;
 
 import de.damirutje.rockpaperscissors.dto.GameStartDto;
+import de.damirutje.rockpaperscissors.exception.GameNotExistException;
+import de.damirutje.rockpaperscissors.exception.GameReadonlyException;
+import de.damirutje.rockpaperscissors.exception.InvalidGameMoveException;
+import de.damirutje.rockpaperscissors.exception.InvalidGameSettingsException;
 import de.damirutje.rockpaperscissors.model.Game;
 import de.damirutje.rockpaperscissors.model.GameMode;
 import de.damirutje.rockpaperscissors.model.GameState;
 import de.damirutje.rockpaperscissors.model.HandSign;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -45,6 +48,7 @@ public class GameServiceTest {
     @Test
     public void testStartGameWithoutSettings() {
         Game game = this.getStartedGame();
+        HandSign[] classicHandSigns = new HandSign[] { HandSign.Rock, HandSign.Paper, HandSign.Scissors };
 
         assertThat(game.getMoves())
                 .withFailMessage("New game should not have any moves")
@@ -60,7 +64,7 @@ public class GameServiceTest {
 
         assertThat(game.getAvailableSigns())
                 .withFailMessage("Available signs of started game should fit the game mode")
-                .isEqualTo(HandSign.values());
+                .isEqualTo(classicHandSigns);
     }
 
     @Test()
@@ -68,8 +72,8 @@ public class GameServiceTest {
         GameStartDto gameStart = new GameStartDto(GameMode.Classic, 0);
 
         assertThatThrownBy(() -> this.gameService.startGame(gameStart))
-                .isInstanceOf(InvalidPropertyException.class)
-                .hasMessageContaining("Index: 2, Size: 2");
+                .isInstanceOf(InvalidGameSettingsException.class)
+                .hasMessageContaining("The best-of game mode expects an odd number of rounds");
     }
 
     @Test()
@@ -77,8 +81,8 @@ public class GameServiceTest {
         GameStartDto gameStart = new GameStartDto(GameMode.Classic, 4);
 
         assertThatThrownBy(() -> this.gameService.startGame(gameStart))
-                .isInstanceOf(InvalidPropertyException.class)
-                .hasMessageContaining("Index: 2, Size: 2");
+                .isInstanceOf(InvalidGameSettingsException.class)
+                .hasMessageContaining("The best-of game mode expects an odd number of rounds");
     }
 
     @Test
@@ -86,8 +90,8 @@ public class GameServiceTest {
         int nonExistingId = Integer.MAX_VALUE;
 
         assertThatThrownBy(() -> this.gameService.getGame(nonExistingId))
-                .isInstanceOf(InvalidPropertyException.class)
-                .hasMessageContaining("Index: 2, Size: 2");
+                .isInstanceOf(GameNotExistException.class)
+                .hasMessageContaining(String.format("The game with id %d does not exist!", nonExistingId));
     }
 
     @Test
@@ -126,8 +130,8 @@ public class GameServiceTest {
                 .isEqualTo(GameState.Finished);
 
         assertThatThrownBy(() -> this.gameService.makeMove(game.getId(), HandSign.Rock))
-                .isInstanceOf(InvalidPropertyException.class)
-                .hasMessageContaining("Index: 2, Size: 2");
+                .isInstanceOf(GameReadonlyException.class)
+                .hasMessageContaining(String.format("The game with id %d can no longer be changed!", game.getId()));
     }
 
     @Test
@@ -135,8 +139,20 @@ public class GameServiceTest {
         int nonExistingId = Integer.MAX_VALUE;
 
         assertThatThrownBy(() -> this.gameService.makeMove(nonExistingId, HandSign.Rock))
-                .isInstanceOf(InvalidPropertyException.class)
-                .hasMessageContaining("Index: 2, Size: 2");
+                .isInstanceOf(GameNotExistException.class)
+                .hasMessageContaining(String.format("The game with id %d does not exist!", nonExistingId));
+    }
+
+    @Test
+    public void testGameMoveWithInvalidHandSign() {
+        Game game = this.getStartedGame();
+        HandSign handSign = HandSign.Well;
+
+        assertThatThrownBy(() -> this.gameService.makeMove(game.getId(), handSign))
+                .isInstanceOf(InvalidGameMoveException.class)
+                .hasMessageContaining(
+                        String.format("Game mode %s does not support '%s' hand sign!", game.getMode(), handSign)
+                );
     }
 
     @Test
@@ -145,8 +161,8 @@ public class GameServiceTest {
         this.gameService.abortGame(game.getId());
 
         assertThatThrownBy(() -> this.gameService.makeMove(game.getId(), HandSign.Rock))
-                .isInstanceOf(InvalidPropertyException.class)
-                .hasMessageContaining("Index: 2, Size: 2");
+                .isInstanceOf(GameReadonlyException.class)
+                .hasMessageContaining(String.format("The game with id %d can no longer be changed!", game.getId()));
     }
 
     @Test
@@ -165,8 +181,8 @@ public class GameServiceTest {
         int nonExistingId = Integer.MAX_VALUE;
 
         assertThatThrownBy(() -> this.gameService.abortGame(nonExistingId))
-                .isInstanceOf(InvalidPropertyException.class)
-                .hasMessageContaining("Index: 2, Size: 2");
+                .isInstanceOf(GameNotExistException.class)
+                .hasMessageContaining(String.format("The game with id %d does not exist!", nonExistingId));
     }
 
     private Game getStartedGame() {

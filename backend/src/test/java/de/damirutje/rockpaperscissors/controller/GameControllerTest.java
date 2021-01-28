@@ -25,9 +25,8 @@ public class GameControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private String getBaseUrl() {
-        return String.format("http://localhost:%d/api/game/", this.port);
-    }
+    private static final HandSign[] classicHandSigns =
+            new HandSign[] { HandSign.Rock, HandSign.Paper, HandSign.Scissors };
 
     @Test
     public void testStartClassicGame() {
@@ -43,7 +42,7 @@ public class GameControllerTest {
 
         assertThat(game.getAvailableSigns())
                 .withFailMessage("Available signs of started game should fit the game mode")
-                .isEqualTo(HandSign.values());
+                .isEqualTo(classicHandSigns);
     }
 
     @Test
@@ -68,12 +67,10 @@ public class GameControllerTest {
 
     @Test
     public void testStartGameWithZeroBestOfRounds() {
-        GameMode gameMode = GameMode.Expanded;
-        int bestOfRounds = 0;
-        GameStartDto gameStart = new GameStartDto(gameMode, bestOfRounds);
+        GameStartDto gameStart = new GameStartDto(GameMode.Expanded, 0);
         HttpEntity<GameStartDto> requestEntity = new HttpEntity<>(gameStart);
-        ResponseEntity<?> result = restTemplate.exchange(getBaseUrl() + "start", HttpMethod.POST,
-                requestEntity, ResponseEntity.class);
+        ResponseEntity<Void> result = restTemplate.exchange(getBaseUrl() + "start", HttpMethod.POST,
+                requestEntity, Void.class);
 
         assertThat(result.getStatusCode())
                 .withFailMessage("Response for invalid game settings should return status 400")
@@ -82,12 +79,10 @@ public class GameControllerTest {
 
     @Test
     public void testStartGameWithEvenBestOfRounds() {
-        GameMode gameMode = GameMode.Expanded;
-        int bestOfRounds = 4;
-        GameStartDto gameStart = new GameStartDto(gameMode, bestOfRounds);
+        GameStartDto gameStart = new GameStartDto(GameMode.Expanded, 4);
         HttpEntity<GameStartDto> requestEntity = new HttpEntity<>(gameStart);
-        ResponseEntity<?> result = restTemplate.exchange(getBaseUrl() + "start", HttpMethod.POST,
-                requestEntity, ResponseEntity.class);
+        ResponseEntity<Void> result = restTemplate.exchange(getBaseUrl() + "start", HttpMethod.POST,
+                requestEntity, Void.class);
 
         assertThat(result.getStatusCode())
                 .withFailMessage("Response for invalid game settings should return status 400")
@@ -141,7 +136,7 @@ public class GameControllerTest {
 
         assertThat(game.getAvailableSigns())
                 .withFailMessage("Available signs of started game should fit the game mode")
-                .isEqualTo(HandSign.values());
+                .isEqualTo(classicHandSigns);
     }
 
     @Test
@@ -197,7 +192,7 @@ public class GameControllerTest {
 
         assertThat(gameAfterMove.getState())
                 .withFailMessage("Game should have state 'Finished'")
-                .isEqualTo(GameState.Started);
+                .isEqualTo(GameState.Finished);
 
         ResponseEntity<Void> finishedGame = restTemplate.exchange(getBaseUrl() + game.getId() + "/move",
                 HttpMethod.POST, requestEntity, Void.class);
@@ -277,6 +272,18 @@ public class GameControllerTest {
     }
 
     @Test
+    public void testGameMoveWithInvalidHandSign() {
+        Game game = this.getStartedGame();
+        HttpEntity<HandSign> requestEntity = new HttpEntity<>(HandSign.Well);
+        ResponseEntity<Game> result = restTemplate.postForEntity(getBaseUrl() + game.getId() + "/move",
+                requestEntity, Game.class);
+
+        assertThat(result.getStatusCode())
+                .withFailMessage("Well is not supported in game mode 'Classic'")
+                .isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
     public void testAbortGame() {
         Game game = this.getStartedGame();
         URI uri = restTemplate.postForLocation(getBaseUrl() + game.getId() + "/abort", null);
@@ -315,6 +322,10 @@ public class GameControllerTest {
         assertThat(result.getStatusCode())
                 .withFailMessage("Response for non existing game should return status 404")
                 .isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    private String getBaseUrl() {
+        return String.format("http://localhost:%d/api/game/", this.port);
     }
 
     private Game getStartedGame() {
