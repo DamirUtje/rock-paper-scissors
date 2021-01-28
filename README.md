@@ -1,18 +1,22 @@
 # Rock-Paper-Scissors
-This repository contains an implementation of the Rock-Paper-Scissors game. Its backend provides a RESTful API service which is based on Spring Boot. The associated frontend was implemented with Angular8.
+
+This repository contains an implementation of the Rock-Paper-Scissors game. Its backend provides a RESTful API service which is based on Spring Boot. The associated frontend is implemented with Angular8.
 
 ## Rules
-In addition to the standard mode with allowed hand signs rock, paper and scissors, the game contains an extended mode with the hand sign well.
+
+The game is played in best-of mode. If a player wins the predetermined odd number of rounds, the entire game is considered won. In addition to the standard set of allowed hand signs rock, paper and scissors, the game contains an extended set with the hand sign "well".
 
 Default mode:
-* Rock beats Scissors
-* Scissors beats Paper
-* Paper beats Rock
+
+- Rock beats Scissors
+- Scissors beats Paper
+- Paper beats Rock
 
 Extended mode:
-* Rock beats Scissors
-* Scissors beats Paper
-* Paper beats Rock and Fountain
-* Fountain beats Rock and Scissors
 
-The extended mode can be enabled via REST-api parameters.
+- Rock beats Scissors
+- Scissors beats Paper
+- Paper beats Rock and Fountain
+- Fountain beats Rock and Scissors
+
+Both settings can optionally be configured via the REST API parameters. Otherwise, the classic set of hand signs in the best-of-3 mode applies.
