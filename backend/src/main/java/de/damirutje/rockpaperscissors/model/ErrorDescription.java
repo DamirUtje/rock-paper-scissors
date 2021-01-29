@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class ErrorDescription {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy hh:mm:ss")
-    private LocalDateTime timestamp;
+    private final LocalDateTime timestamp;
     private final int status;
     private final String message;
     private final String path;

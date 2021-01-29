@@ -1,1 +1,67 @@
-<p>home works!</p>
+<div class="main-wrapper">
+  <div class="container-wrapper">
+    <button
+      class="btn-wrapper"
+      mat-raised-button
+      (click)="settingsPanel.expanded = !settingsPanel.expanded">
+      Setup Game
+    </button>
+  </div>
+
+  <div class="container-wrapper">
+    <mat-accordion>
+      <mat-expansion-panel
+        #settingsPanel="matExpansionPanel"
+        hideToggle
+        class="mat-elevation-z0">
+        <div>
+          <div>
+            <p style="margin-bottom: 5px" class="mat-h3">Game mode</p>
+          </div>
+          <div>
+            <mat-button-toggle-group #gameModeGroup="matButtonToggleGroup">
+              <mat-button-toggle checked="true" value="Classic">Classic</mat-button-toggle>
+              <mat-button-toggle value="Extended">Extended</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+          <div>
+            <p style="margin-top: 10px">
+              {{
+                gameModeGroup.value === "Classic"
+                  ? "Rock, Paper and Scissors"
+                  : "Rock, Paper, Scissors and Well"
+              }}
+            </p>
+          </div>
+        </div>
+
+        <div class="container-wrapper">
+          <div>
+            <p style="margin: 0" class="mat-h3">Best-Of-Rounds</p>
+          </div>
+          <div class="row-wrapper">
+            <div>
+              <button mat-mini-fab [disabled]="bestOfRounds <= 1" (click)="onLessRounds($event)">
+                <mat-icon>remove</mat-icon>
+              </button>
+            </div>
+            <div style="padding: 20px 20px">
+              {{ bestOfRounds }}
+            </div>
+            <div>
+              <button mat-mini-fab [disabled]="bestOfRounds >= maxRounds" (click)="onMoreRounds($event)">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <div>
+    <button class="btn-wrapper" mat-raised-button color="accent" (click)="startGame($event, gameModeGroup.value)">
+      Start Game
+    </button>
+  </div>
+</div>
