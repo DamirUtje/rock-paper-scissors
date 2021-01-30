@@ -17,13 +17,8 @@ export class GameService {
 
   constructor(private http: HttpClient) { }
 
-  /** Start a new game with default settings */
-  startGameDefault(game: GameStartDto): Observable<any> {
-    return this.http.post(`${this.gameUrl}/start`, game, this.httpOptions).pipe();
-  }
-
   /** Start a new game with given game settings */
-  startGame(game: GameStartDto): Observable<any> {
+  startGame(game?: GameStartDto): Observable<any> {
     return this.http.post(`${this.gameUrl}/start`, game, this.httpOptions).pipe();
   }
 

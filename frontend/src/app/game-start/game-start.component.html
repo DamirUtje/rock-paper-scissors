@@ -19,18 +19,16 @@
             <p style="margin-bottom: 5px" class="mat-h3">Game mode</p>
           </div>
           <div>
-            <mat-button-toggle-group #gameModeGroup="matButtonToggleGroup">
-              <mat-button-toggle checked="true" value="Classic">Classic</mat-button-toggle>
-              <mat-button-toggle value="Extended">Extended</mat-button-toggle>
+            <mat-button-toggle-group
+              [value]="selectedMode"
+              (change)="onModeChange($event)">
+              <mat-button-toggle [value]="gameModes.Classic">Classic</mat-button-toggle>
+              <mat-button-toggle [value]="gameModes.Extended">Extended</mat-button-toggle>
             </mat-button-toggle-group>
           </div>
           <div>
             <p style="margin-top: 10px">
-              {{
-                gameModeGroup.value === "Classic"
-                  ? "Rock, Paper and Scissors"
-                  : "Rock, Paper, Scissors and Well"
-              }}
+              {{ getModeDescription(selectedMode) }}
             </p>
           </div>
         </div>
@@ -41,7 +39,7 @@
           </div>
           <div class="row-wrapper">
             <div>
-              <button mat-mini-fab [disabled]="bestOfRounds <= 1" (click)="onLessRounds($event)">
+              <button mat-mini-fab [disabled]="canReduceRounds()" (click)="onRoundsReduce($event)">
                 <mat-icon>remove</mat-icon>
               </button>
             </div>
@@ -49,7 +47,7 @@
               {{ bestOfRounds }}
             </div>
             <div>
-              <button mat-mini-fab [disabled]="bestOfRounds >= maxRounds" (click)="onMoreRounds($event)">
+              <button mat-mini-fab [disabled]="canIncreaseRounds()" (click)="onRoundsIncrease($event)">
                 <mat-icon>add</mat-icon>
               </button>
             </div>
@@ -60,8 +58,11 @@
   </div>
 
   <div>
-    <button class="btn-wrapper" mat-raised-button color="accent" (click)="startGame($event, gameModeGroup.value)">
-      Start Game
+    <button
+    class="btn-wrapper"
+    mat-raised-button color="accent"
+    (click)="startGame($event, selectedMode)">
+    Start Game
     </button>
   </div>
 </div>
