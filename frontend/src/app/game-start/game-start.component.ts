@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { GameMode } from '../shared/game-mode.enum';
 import { GameStartDto } from '../shared/game-start-dto.model';
 import { GameService } from '../shared/game.service';
@@ -15,7 +16,10 @@ export class GameStartComponent implements OnInit {
   readonly gameModes = GameMode;
   selectedMode = GameMode.Classic;
 
-  constructor(private gameService: GameService) { }
+  constructor(
+    private gameService: GameService,
+    private router: Router,
+    ) { }
 
   ngOnInit(): void {
   }
@@ -63,8 +67,9 @@ export class GameStartComponent implements OnInit {
     } as GameStartDto;
 
     this.gameService.startGame(game).subscribe(res => {
-
-      console.log(res.headers.get('Location'));
+      const newGameLocation = res.headers.get('Location');
+      const gameId = newGameLocation.split('/').pop();
+      this.router.navigate([`game/${gameId}`]);
     });
   }
 }

@@ -15,12 +15,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { GameService } from './shared/game.service';
 import { GameStartComponent } from './game-start/game-start.component';
 //import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialogModule } from '@angular/material/dialog';
+import { InfoDialogComponent } from './info-dialog/info-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GameComponent,
-    GameStartComponent
+    GameStartComponent,
+    InfoDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -35,6 +38,7 @@ import { GameStartComponent } from './game-start/game-start.component';
     MatIconModule,
     MatExpansionModule,
     //MatTooltipModule,
+    MatDialogModule,
   ],
   providers: [
     GameService,

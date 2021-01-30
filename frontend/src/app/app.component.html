@@ -1,9 +1,11 @@
 <p>
   <mat-toolbar color="primary">
-    <span>Rock-Paper-Scissors</span>
+    <span>Rock-Paper-Scissors 🎮</span>
+    <span style="flex: 1 1 auto;"></span>
+    <button mat-icon-button (click)="openInfoDialog()">
+      <mat-icon>info</mat-icon>
+    </button>
   </mat-toolbar>
 </p>
-<div> <!--style="padding: 20px; width: 100%;"-->
-  <router-outlet></router-outlet>
-</div>
+<router-outlet></router-outlet>
 

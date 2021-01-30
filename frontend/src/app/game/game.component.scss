@@ -1,0 +1,18 @@
+.menu-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.sign-btn {
+  margin: 20px;
+  font-size: xxx-large;
+  width: 75px;
+  height: 75px;
+  background-color: beige;
+}
+
+.signs-row {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+}

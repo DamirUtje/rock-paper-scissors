@@ -1,10 +1,3 @@
-.main-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
 .container-wrapper {
   padding-top: 20px;
   text-align: center;
@@ -17,7 +10,6 @@
   align-items: center;
 }
 
-.btn-wrapper {
-  width: 150px;
-  height: 50px;
+.button-group {
+  line-height: 30px;
 }

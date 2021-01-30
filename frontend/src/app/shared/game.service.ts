@@ -19,13 +19,21 @@ export class GameService {
 
   /** Start a new game with given game settings */
   startGame(game?: GameStartDto): Observable<any> {
-    return this.http.post(`${this.gameUrl}/start`, game, this.httpOptions).pipe();
+    return this.http.post(`${this.gameUrl}/start`, game, this.httpOptions);
   }
 
-  /** GET game by id */
+  /** Get game by id */
   getGame(id: number): Observable<Game> {
-    const url = `${this.gameUrl}/${id}`;
-    return this.http.get<Game>(url).pipe();
+    return this.http.get<Game>(`${this.gameUrl}/${id}`);
   }
 
+  /** Make move for given game */
+  makeMove(id: number, handSign: string | number): Observable<Game> {
+    return this.http.post<Game>(`${this.gameUrl}/${id}/move`, handSign);
+  }
+
+  /** Abort game */
+  abortGame(id: number): Observable<any> {
+    return this.http.post(`${this.gameUrl}/${id}/abort`, this.httpOptions);
+  }
 }

@@ -1,1 +1,33 @@
-<p *ngIf="game">Game id {{game.id}}</p>
+<div *ngIf="game" class="main-wrapper">
+  <div class="menu-wrapper">
+    <div style="margin-left: 10px">
+      <a class="btn-wrapper" color="accent" mat-raised-button href="/start">&#xab;New Game</a>
+    </div>
+    <div style="margin-left: 10px">
+      <button class="btn-wrapper" color="primary" mat-raised-button>
+        Restart
+      </button>
+    </div>
+  </div>
+
+  <div>
+    <p class="mat-h3">Choose a hand sign:</p>
+  </div>
+
+  <div class="signs-row">
+    <span *ngFor="let sign of game.availableSigns">
+      <button
+        class="sign-btn"
+        mat-fab
+        color="basic"
+        (click)="onSignClicked($event, sign)">
+        {{ signs[sign] }}
+      </button>
+      <p>{{ sign }}</p>
+    </span>
+  </div>
+
+  <div>
+    <p class="mat-h2">Win!!</p>
+  </div>
+</div>
