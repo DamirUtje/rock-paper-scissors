@@ -1,7 +1,14 @@
 <div *ngIf="game" class="main-wrapper">
+  <div>{{game.id}}</div>
   <div class="menu-wrapper">
     <div style="margin-left: 10px">
-      <a class="btn-wrapper" color="accent" mat-raised-button href="/start">&#xab;New Game</a>
+      <button
+        class="btn-wrapper"
+        color="accent"
+        mat-raised-button
+        (click)="newGame()">
+        &#xab;New Game
+      </button>
     </div>
     <div style="margin-left: 10px">
       <button

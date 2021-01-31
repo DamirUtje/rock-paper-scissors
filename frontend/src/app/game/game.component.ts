@@ -1,6 +1,8 @@
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { trigger, style, transition, animate } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GameStartDto } from '../shared/game-start-dto.model';
+import { GameState } from '../shared/game-state.enum';
 import { Game } from '../shared/game.model';
 import { GameService } from '../shared/game.service';
 import { HandSign } from '../shared/hand-sign.enum';
@@ -36,15 +38,20 @@ export class GameComponent implements OnInit {
 
   constructor(
     private gameService: GameService,
-    private route: ActivatedRoute
-  ) { }
-
-  ngOnInit(): void {
-    this.getGame();
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    route.params.subscribe(params => {
+      const id = params['id'];
+      this.getGame(id);
+    });
   }
 
-  private getGame(): void {
-    const id = +this.route.snapshot.paramMap.get('id');
+  ngOnInit(): void {
+  }
+
+  private getGame(gameId?: number): void {
+    const id = gameId || +this.route.snapshot.paramMap.get('id');
 
     this.gameService.getGame(id)
       .subscribe((game: Game) => this.game = game);
@@ -81,6 +88,35 @@ export class GameComponent implements OnInit {
   }
 
   restartGame(): void {
+    if (this.game.state === GameState.Started) {
+      this.gameService.abortGame(this.game.id).subscribe(() => {
+        this.startNewGame();
+      });
+    } else {
+      this.startNewGame();
+    }
+  }
 
+  private startNewGame() {
+    const newGame = {
+      mode: this.game.mode.toString(),
+      bestOfRounds: this.game.bestOfRounds
+    } as GameStartDto;
+
+    this.gameService.startGame(newGame).subscribe(res => {
+      const newGameLocation = res.headers.get('Location');
+      const gameId = newGameLocation.split('/').pop();
+      this.router.navigate([`game/${gameId}`]);
+    });
+  }
+
+  newGame(): void {
+    if (this.game.state === GameState.Started) {
+      this.gameService.abortGame(this.game.id).subscribe(() => {
+        this.router.navigate(['start']);
+      });
+    } else {
+      this.router.navigate(['start']);
+    }
   }
 }
