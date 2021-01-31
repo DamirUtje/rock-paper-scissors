@@ -13,7 +13,7 @@ export class AppComponent {
 
   openInfoDialog(): void {
     this.dialog.open(InfoDialogComponent, {
-
+      width: '450px',
     });
   }
 }

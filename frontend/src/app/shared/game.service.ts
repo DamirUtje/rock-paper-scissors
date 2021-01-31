@@ -12,14 +12,17 @@ export class GameService {
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-    observe: "response" as 'body',
   };
 
   constructor(private http: HttpClient) { }
 
   /** Start a new game with given game settings */
   startGame(game?: GameStartDto): Observable<any> {
-    return this.http.post(`${this.gameUrl}/start`, game, this.httpOptions);
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      observe: "response" as 'body',
+    };
+    return this.http.post(`${this.gameUrl}/start`, game, httpOptions);
   }
 
   /** Get game by id */
@@ -29,7 +32,7 @@ export class GameService {
 
   /** Make move for given game */
   makeMove(id: number, handSign: string | number): Observable<Game> {
-    return this.http.post<Game>(`${this.gameUrl}/${id}/move`, handSign);
+    return this.http.post<Game>(`${this.gameUrl}/${id}/move`, JSON.stringify(handSign), this.httpOptions);
   }
 
   /** Abort game */

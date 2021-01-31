@@ -11,7 +11,7 @@
   </div>
 
   <div>
-    <p class="mat-h3">Choose a hand sign:</p>
+    <p style="margin: 30px 0 0 0;" class="mat-h3">Choose a hand sign:</p>
   </div>
 
   <div class="signs-row">
@@ -28,6 +28,15 @@
   </div>
 
   <div>
-    <p class="mat-h2">Win!!</p>
+    <h2 class="mat-h2">Win!! 🙂</h2>
   </div>
+
+  <div class="signs-row">
+    <div *ngFor="let move of game.moves">
+      <div [ngClass]="(move.result.toString()=='Win')?'tile-win':'tile'">{{ signs[move.userSign] }}</div>
+      <div [ngClass]="(move.result.toString()=='Loose')?'tile-win':'tile'">{{ signs[move.botSign] }}</div>
+      <p style="margin-top: 5px;">{{ move.round }}</p>
+    </div>
+</div>
+
 </div>

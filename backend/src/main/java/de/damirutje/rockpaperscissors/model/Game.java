@@ -3,9 +3,7 @@ package de.damirutje.rockpaperscissors.model;
 import org.apache.commons.lang3.ArrayUtils;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Game {
@@ -17,7 +15,7 @@ public class Game {
     private GameMode mode;
     private int bestOfRounds;
     @ElementCollection(fetch = FetchType.EAGER)
-    private Set<Move> moves;
+    private List<Move> moves;
     @NotNull
     private  GameState state;
 
@@ -31,7 +29,7 @@ public class Game {
     public Game(GameMode mode, int bestOfRounds) {
         this.mode = mode;
         this.bestOfRounds = bestOfRounds;
-        this.moves = new HashSet<>();
+        this.moves = new ArrayList<>();
         this.state = GameState.Started;
     }
 
@@ -47,7 +45,7 @@ public class Game {
         return this.bestOfRounds;
     }
 
-    public Set<Move> getMoves() {
+    public List<Move> getMoves() {
         return this.moves;
     }
 
