@@ -91,6 +91,11 @@ public class GameServiceImpl implements GameService {
         }
     }
 
+    /**
+     * Counts the amount of won games for both players.
+     * @param game to count wins for
+     * @return amount of won games
+     */
     private Long getGameWins(Game game) {
         Long gameWins = 0L;
         if (!game.getMoves().isEmpty()) {
@@ -108,11 +113,21 @@ public class GameServiceImpl implements GameService {
         return gameWins;
     }
 
+    /**
+     * Persists a given {@link Game} entity to database and returns its id.
+     * @param game entity to save {@link Game}
+     * @return id of current {@link Game}
+     */
     private long getPersistedGameId(Game game) {
         Game persistedGame = this.gameRepository.save(game);
         return persistedGame.getId();
     }
 
+    /**
+     * Requests a {@link Game} entity from database by specified id.
+     * @param id of requested {@link Game}
+     * @return requested {@link Game}
+     */
     private Game getGameFromDb(long id) {
         Game game = null;
         Optional<Game> dbGame = this.gameRepository.findById(id);
@@ -125,6 +140,12 @@ public class GameServiceImpl implements GameService {
         return game;
     }
 
+    /**
+     * Makes the {@link Move} for current {@link Game}.
+     * @param game current game
+     * @param userSign form UI
+     * @return completed {@link Move}
+     */
     private Move getMove(Game game, HandSign userSign) {
         HandSign botSign = getBotSign(game);
         MoveResult result = getMoveResult(userSign, botSign);
@@ -133,17 +154,28 @@ public class GameServiceImpl implements GameService {
         return move;
     }
 
-    private MoveResult getMoveResult(HandSign userShape, HandSign botShape) {
+    /**
+     * Compares thw given {@link HandSign}s to determine move result.
+     * @param userSign sign from UI
+     * @param botSign random sign
+     * @return random {@link HandSign}
+     */
+    private MoveResult getMoveResult(HandSign userSign, HandSign botSign) {
         var result = MoveResult.Draw;
 
-        if (userShape.isBetterThan(botShape)) {
+        if (userSign.isBetterThan(botSign)) {
             result = MoveResult.Win;
-        } else if(botShape.isBetterThan(userShape)) {
+        } else if(botSign.isBetterThan(userSign)) {
             result = MoveResult.Loose;
         }
         return result;
     }
 
+    /**
+     * Makes a random {@link HandSign} for second player.
+     * @param game to make move
+     * @return random {@link HandSign}
+     */
     private HandSign getBotSign(Game game) {
         Random random = new Random();
         HandSign[] handSigns = game.getAvailableSigns();

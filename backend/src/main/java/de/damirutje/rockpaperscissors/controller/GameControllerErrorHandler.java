@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
-public class GameControllerExceptionHandler {
+public class GameControllerErrorHandler {
 
     @ExceptionHandler(GameNotExistException.class)
     public ResponseEntity<ErrorDescription> handleGameNotExists(WebRequest request,

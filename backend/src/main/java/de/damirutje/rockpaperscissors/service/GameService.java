@@ -20,7 +20,7 @@ public interface GameService {
     long startGame(GameStartDto gameStartDto);
 
     /**
-     * Requests {@link Game} entity from database by specified id.
+     * Requests a {@link Game} entity from database by specified id.
      * @param id of requested {@link Game}
      * @return requested {@link Game}
      */

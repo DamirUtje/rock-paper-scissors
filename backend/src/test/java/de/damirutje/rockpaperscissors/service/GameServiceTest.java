@@ -97,42 +97,37 @@ public class GameServiceTest {
     @Test
     public void testGameMoveCount() {
         Game game = this.getStartedGame();
-        Game gameAfterMove = this.gameService.makeMove(game.getId(), HandSign.Paper);
+        game = this.gameService.makeMove(game.getId(), HandSign.Paper);
 
-        assertThat(gameAfterMove)
+        assertThat(game)
                 .withFailMessage("Game should not be null after a move")
                 .isNotNull();
 
-        assertThat(gameAfterMove.getMode())
+        assertThat(game.getMode())
                 .withFailMessage("Mode of started game should be 'Classic'")
                 .isEqualTo(GameMode.Classic);
 
-        assertThat(gameAfterMove.getMoves())
+        assertThat(game.getMoves())
                 .withFailMessage("Game should have 1 move")
                 .hasSize(1);
     }
 
     @Test
     public void testGameMoveStateFinished() {
-        Game game = this.getStartedGame(GameMode.Expanded, 1);
-        Game gameAfterMove = this.gameService.makeMove(game.getId(), HandSign.Paper);
+        Game game = this.getStartedGame(GameMode.Expanded, 5);
+        long gameID = game.getId();
 
-        assertThat(gameAfterMove)
-                .withFailMessage("Game should not be null after a move")
-                .isNotNull();
+        while (game.getState() != GameState.Finished) {
+            game = this.gameService.makeMove(gameID, HandSign.Paper);
+        }
 
-        assertThat(gameAfterMove.getMode())
-                .withFailMessage("Mode of started game should be 'Expanded'")
-                .isEqualTo(GameMode.Expanded);
-
-        assertThat(gameAfterMove.getState())
+        assertThat(game.getState())
                 .withFailMessage("Game should have state 'Finished'")
                 .isEqualTo(GameState.Finished);
 
-        // TODO: fix can be Draw
-        assertThatThrownBy(() -> this.gameService.makeMove(game.getId(), HandSign.Rock))
+        assertThatThrownBy(() -> this.gameService.makeMove(gameID, HandSign.Rock))
                 .isInstanceOf(GameReadonlyException.class)
-                .hasMessageContaining(String.format("The game with id %d can no longer be changed!", game.getId()));
+                .hasMessageContaining(String.format("The game with id %d can no longer be changed!", gameID));
     }
 
     @Test

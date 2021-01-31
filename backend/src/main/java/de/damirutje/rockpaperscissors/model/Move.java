@@ -73,13 +73,12 @@ public class Move {
         if (o == null || getClass() != o.getClass()) return false;
         Move move = (Move) o;
         return id == move.id && round == move.round
-                && userSign == move.userSign
-                && botSign == move.botSign && result == move.result;
+                && userSign == move.userSign && botSign == move.botSign && result == move.result;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, round, userSign, botSign, result);
+        return Objects.hash(id, userSign, botSign, result);
     }
 
     @Override

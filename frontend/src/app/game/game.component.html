@@ -1,5 +1,4 @@
 <div *ngIf="game" class="main-wrapper">
-  <div>{{game.id}}</div>
   <div class="menu-wrapper">
     <div style="margin-left: 10px">
       <button
@@ -22,9 +21,7 @@
   </div>
 
   <div *ngIf="!moving && game.state.toString() == 'Started'">
-    <div style="text-align: center;">
-      <p class="mat-h3">Choose a hand sign:</p>
-    </div>
+    <div style="text-align: center;">Choose a hand sign:</div>
     <div class="row-wrapper">
       <span *ngFor="let sign of game.availableSigns">
         <button
@@ -51,6 +48,7 @@
     <p class="result-final">{{ currentResult }}! {{ results[currentResult] }}</p>
   </div>
 
+  <div>Best-of-{{game.bestOfRounds}} rounds</div>
   <div *ngIf="game.moves.length > 0" class="row-wrapper">
     <div>
       <div class="tile-info">You</div>
@@ -62,8 +60,5 @@
         <p class="tile-round">{{ move.round }}</p>
     </div>
   </div>
-
-
-
 
 </div>

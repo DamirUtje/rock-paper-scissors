@@ -71,12 +71,13 @@ public class Game {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
-        return id == game.id && bestOfRounds == game.bestOfRounds && mode == game.mode;
+        return id == game.id && bestOfRounds == game.bestOfRounds
+                && mode == game.mode && Objects.equals(moves, game.moves) && state == game.state;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, mode, bestOfRounds);
+        return Objects.hash(id, mode, bestOfRounds, moves, state);
     }
 
     @Override

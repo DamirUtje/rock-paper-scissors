@@ -151,7 +151,7 @@ public class GameControllerTest {
 
     @Test
     public void testGameMoveCount() {
-        Game game = this.getStartedGame();
+        Game game = this.getStartedGame(GameMode.Expanded, 1);
         HttpEntity<HandSign> requestEntity = new HttpEntity<>(HandSign.Rock);
         ResponseEntity<Game> entity = restTemplate.postForEntity(getBaseUrl() + game.getId() + "/move",
                 requestEntity, Game.class);
@@ -174,31 +174,37 @@ public class GameControllerTest {
                 .hasSize(1);
     }
 
-    // TODO: fix can be Draw
     @Test
     public void testGameMoveWithFinishedState() {
-        Game game = this.getStartedGame(GameMode.Expanded, 1);
+        Game game = this.getStartedGame(GameMode.Expanded, 3);
         HttpEntity<HandSign> requestEntity = new HttpEntity<>(HandSign.Rock);
-        ResponseEntity<Game> entity = restTemplate.postForEntity(getBaseUrl() + game.getId() + "/move",
-                requestEntity, Game.class);
 
-        assertThat(entity.getStatusCode())
-                .withFailMessage("Response for valid game should return status 200")
-                .isEqualTo(HttpStatus.OK);
+        while (game.getState() != GameState.Finished) {
+            ResponseEntity<Game> gameEntity =
+                    restTemplate.postForEntity(getBaseUrl() + game.getId() + "/move", requestEntity, Game.class);
 
-        Game gameAfterMove = entity.getBody();
-        assertThat(gameAfterMove)
+            game = gameEntity.getBody();
+            assertThat(game)
+                    .withFailMessage("Game after move should not be null")
+                    .isNotNull();
+        }
+
+        ResponseEntity<Game> finishedGameEntity =
+                restTemplate.getForEntity(getBaseUrl() + game.getId(), Game.class);
+
+        Game finishedGame = finishedGameEntity.getBody();
+        assertThat(finishedGame)
                 .withFailMessage("Game after move should not be null")
                 .isNotNull();
 
-        assertThat(gameAfterMove.getState())
+        assertThat(finishedGame.getState())
                 .withFailMessage("Game should have state 'Finished'")
                 .isEqualTo(GameState.Finished);
 
-        ResponseEntity<Void> finishedGame = restTemplate.exchange(getBaseUrl() + game.getId() + "/move",
+        ResponseEntity<Void> finishedResult = restTemplate.exchange(getBaseUrl() + game.getId() + "/move",
                 HttpMethod.POST, requestEntity, Void.class);
 
-        assertThat(finishedGame.getStatusCode())
+        assertThat(finishedResult.getStatusCode())
                 .withFailMessage("Response for move with finished game should return status 409")
                 .isEqualTo(HttpStatus.CONFLICT);
     }
