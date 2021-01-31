@@ -12,7 +12,7 @@ import { GameService } from '../shared/game.service';
 export class GameStartComponent implements OnInit {
 
   bestOfRounds = 3;
-  readonly maxRounds = 7;
+  readonly maxRounds = 5;
   readonly gameModes = GameMode;
   selectedMode = GameMode.Classic;
 

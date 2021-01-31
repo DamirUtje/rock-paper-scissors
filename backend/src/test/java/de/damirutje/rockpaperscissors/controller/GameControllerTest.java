@@ -174,6 +174,7 @@ public class GameControllerTest {
                 .hasSize(1);
     }
 
+    // TODO: fix can be Draw
     @Test
     public void testGameMoveWithFinishedState() {
         Game game = this.getStartedGame(GameMode.Expanded, 1);

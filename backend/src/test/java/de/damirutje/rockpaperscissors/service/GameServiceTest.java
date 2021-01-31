@@ -129,6 +129,7 @@ public class GameServiceTest {
                 .withFailMessage("Game should have state 'Finished'")
                 .isEqualTo(GameState.Finished);
 
+        // TODO: fix can be Draw
         assertThatThrownBy(() -> this.gameService.makeMove(game.getId(), HandSign.Rock))
                 .isInstanceOf(GameReadonlyException.class)
                 .hasMessageContaining(String.format("The game with id %d can no longer be changed!", game.getId()));

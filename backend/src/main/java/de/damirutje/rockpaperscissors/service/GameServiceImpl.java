@@ -10,10 +10,8 @@ import de.damirutje.rockpaperscissors.repository.GameRepository;
 import de.damirutje.rockpaperscissors.repository.MoveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GameServiceImpl implements GameService {
@@ -83,14 +81,31 @@ public class GameServiceImpl implements GameService {
     }
 
     private void setCurrentMove(Game game, Move currentMove) {
-        if (game.getMoves().size() < game.getBestOfRounds()) {
+        if (this.getGameWins(game) < game.getBestOfRounds()) {
             game.getMoves().add(currentMove);
             currentMove.setRound(game.getMoves().size());
         }
 
-        if (currentMove.getRound() >= game.getBestOfRounds()) {
+        if (this.getGameWins(game) >= game.getBestOfRounds()) {
             game.setState(GameState.Finished);
         }
+    }
+
+    private Long getGameWins(Game game) {
+        Long gameWins = 0L;
+        if (!game.getMoves().isEmpty()) {
+            Map<MoveResult, Long> resultDict = game.getMoves()
+                    .stream()
+                    .filter(move -> move.getResult() != MoveResult.Draw)
+                    .collect(Collectors.groupingBy(Move::getResult, Collectors.counting()));
+
+            if (!resultDict.isEmpty()) {
+                gameWins = Collections
+                        .max(resultDict.entrySet(), Comparator.comparingLong(Map.Entry::getValue))
+                        .getValue();
+            }
+        }
+        return gameWins;
     }
 
     private long getPersistedGameId(Game game) {

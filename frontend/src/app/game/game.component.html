@@ -4,39 +4,59 @@
       <a class="btn-wrapper" color="accent" mat-raised-button href="/start">&#xab;New Game</a>
     </div>
     <div style="margin-left: 10px">
-      <button class="btn-wrapper" color="primary" mat-raised-button>
+      <button
+        class="btn-wrapper"
+        color="primary"
+        mat-raised-button
+        (click)="restartGame()">
         Restart
       </button>
     </div>
   </div>
 
-  <div>
-    <p style="margin: 30px 0 0 0;" class="mat-h3">Choose a hand sign:</p>
-  </div>
-
-  <div class="signs-row">
-    <span *ngFor="let sign of game.availableSigns">
-      <button
-        class="sign-btn"
-        mat-fab
-        color="basic"
-        (click)="onSignClicked($event, sign)">
-        {{ signs[sign] }}
-      </button>
-      <p>{{ sign }}</p>
-    </span>
-  </div>
-
-  <div>
-    <h2 class="mat-h2">Win!! 🙂</h2>
-  </div>
-
-  <div class="signs-row">
-    <div *ngFor="let move of game.moves">
-      <div [ngClass]="(move.result.toString()=='Win')?'tile-win':'tile'">{{ signs[move.userSign] }}</div>
-      <div [ngClass]="(move.result.toString()=='Loose')?'tile-win':'tile'">{{ signs[move.botSign] }}</div>
-      <p style="margin-top: 5px;">{{ move.round }}</p>
+  <div *ngIf="!moving && game.state.toString() == 'Started'">
+    <div style="text-align: center;">
+      <p class="mat-h3">Choose a hand sign:</p>
+    </div>
+    <div class="row-wrapper">
+      <span *ngFor="let sign of game.availableSigns">
+        <button
+          class="sign-btn"
+          mat-fab
+          color="basic"
+          (click)="onSignClicked($event, sign)">
+          {{ signs[sign] }}
+        </button>
+        <p>{{ sign }}</p>
+      </span>
     </div>
 </div>
+
+  <div *ngIf="currentMove && moving" class="row-wrapper" style="align-items: center;">
+    <div class="move" [@slideInMe]>{{ signs[currentMove.userSign] }}</div>
+    <div>
+      <p class="mat-h2">{{ currentResult }}! {{ results[currentResult] }}</p>
+    </div>
+    <div class="move"[@slideInBecky]>{{ signs[currentMove.botSign] }}</div>
+  </div>
+
+  <div *ngIf="currentMove && game.state.toString() == 'Finished'">
+    <p class="result-final">{{ currentResult }}! {{ results[currentResult] }}</p>
+  </div>
+
+  <div *ngIf="game.moves.length > 0" class="row-wrapper">
+    <div>
+      <div class="tile-info">You</div>
+      <div class="tile-info">Becky</div>
+    </div>
+    <div *ngFor="let move of game.moves">
+      <div [ngClass]="(move.result.toString()=='Win')?'tile-win':'tile'">{{ signs[move.userSign] }}</div>
+        <div [ngClass]="(move.result.toString()=='Loose')?'tile-win':'tile'">{{ signs[move.botSign] }}</div>
+        <p class="tile-round">{{ move.round }}</p>
+    </div>
+  </div>
+
+
+
 
 </div>
