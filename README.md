@@ -34,17 +34,17 @@ $ mvn package
 and execute it with
 
 ```
-$ java -jar target/rockpaperscissors-1.0.jar
+$ mvn spring-boot:run
 ```
 the application starts a webserver that listens on port 8080
 
 ### Frontend
 After the download, navigate to the appropriate folder and execute the commands:
-1: 
+
 ```
 $ npm install
 ```
-2: 
+and 
 ```
 $ ng serve
 ```
