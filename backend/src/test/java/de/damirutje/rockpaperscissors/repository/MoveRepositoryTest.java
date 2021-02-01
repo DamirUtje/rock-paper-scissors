@@ -19,6 +19,7 @@ public class MoveRepositoryTest {
     @Test
     public void testShouldSaveAndQueryMove() {
         Move move = new Move(HandSign.Rock, HandSign.Paper, MoveResult.Draw);
+        moveRepository.save(move);
 
         Optional<Move> moveQuery = moveRepository.findById(move.getId());
 
