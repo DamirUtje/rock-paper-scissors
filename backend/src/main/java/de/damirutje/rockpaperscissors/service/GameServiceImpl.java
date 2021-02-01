@@ -8,6 +8,7 @@ import de.damirutje.rockpaperscissors.exception.InvalidGameSettingsException;
 import de.damirutje.rockpaperscissors.model.*;
 import de.damirutje.rockpaperscissors.repository.GameRepository;
 import de.damirutje.rockpaperscissors.repository.MoveRepository;
+import de.damirutje.rockpaperscissors.utils.GameHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -54,7 +55,7 @@ public class GameServiceImpl implements GameService {
         Game game = this.getGameFromDb(gameId);
         this.validateGameMove(game, handSign);
         Move move = this.getMove(game, handSign);
-        this.setCurrentMove(game, move);
+        this.addCurrentMove(game, move);
         this.gameRepository.save(game);
         return game;
     }
@@ -80,7 +81,12 @@ public class GameServiceImpl implements GameService {
         }
     }
 
-    private void setCurrentMove(Game game, Move currentMove) {
+    /**
+     * Add current move to game list if game is not finished yet.
+     * @param currentMove to add to game
+     * @param game to set move to
+     */
+    private void addCurrentMove(Game game, Move currentMove) {
         if (this.getGameWins(game) < game.getBestOfRounds()) {
             game.getMoves().add(currentMove);
             currentMove.setRound(game.getMoves().size());
@@ -147,38 +153,10 @@ public class GameServiceImpl implements GameService {
      * @return completed {@link Move}
      */
     private Move getMove(Game game, HandSign userSign) {
-        HandSign botSign = getBotSign(game);
-        MoveResult result = getMoveResult(userSign, botSign);
+        HandSign botSign = GameHelper.getBotSign(game);
+        MoveResult result = GameHelper.getMoveResult(userSign, botSign);
         Move move = new Move(userSign, botSign, result);
         this.moveRepository.save(move);
         return move;
-    }
-
-    /**
-     * Compares thw given {@link HandSign}s to determine move result.
-     * @param userSign sign from UI
-     * @param botSign random sign
-     * @return random {@link HandSign}
-     */
-    private MoveResult getMoveResult(HandSign userSign, HandSign botSign) {
-        var result = MoveResult.Draw;
-
-        if (userSign.isBetterThan(botSign)) {
-            result = MoveResult.Win;
-        } else if(botSign.isBetterThan(userSign)) {
-            result = MoveResult.Lose;
-        }
-        return result;
-    }
-
-    /**
-     * Makes a random {@link HandSign} for second player.
-     * @param game to make move
-     * @return random {@link HandSign}
-     */
-    private HandSign getBotSign(Game game) {
-        Random random = new Random();
-        HandSign[] handSigns = game.getAvailableSigns();
-        return handSigns[random.nextInt(handSigns.length)];
     }
 }

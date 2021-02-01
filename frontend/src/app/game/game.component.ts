@@ -58,11 +58,10 @@ export class GameComponent implements OnInit {
     const id = gameId || +this.route.snapshot.paramMap.get('id');
 
     this.gameService.getGame(id)
-      .subscribe((game: Game) => this.game = game, error => {
-        if (error && error.status == 404) {
-          this.router.navigate(['not-found']);
-        }
-      });
+      .subscribe(
+        (game: Game) => this.game = game,
+        () => this.router.navigate(['not-found'])
+      );
   }
 
   get currentMove(): Move {
@@ -87,6 +86,8 @@ export class GameComponent implements OnInit {
       .subscribe((game: Game) => {
         this.game = game;
         setTimeout(() => this.moving = false, 2000);
+      }, () => {
+        this.router.navigate(['not-found']);
       });
   }
 
