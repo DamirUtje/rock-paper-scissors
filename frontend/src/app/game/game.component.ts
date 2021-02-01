@@ -1,6 +1,8 @@
 import { trigger, style, transition, animate } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { GameStartDto } from '../shared/game-start-dto.model';
 import { GameState } from '../shared/game-state.enum';
 import { Game } from '../shared/game.model';
@@ -32,6 +34,7 @@ export class GameComponent implements OnInit {
 
   readonly signs = HandSign;
   readonly results = MoveResult;
+  readonly states = GameState;
 
   game: Game;
   moving: boolean = false;
@@ -39,7 +42,8 @@ export class GameComponent implements OnInit {
   constructor(
     private gameService: GameService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    public confirmDialog: MatDialog
   ) {
     route.params.subscribe(params => {
       const id = params['id'];
@@ -54,7 +58,11 @@ export class GameComponent implements OnInit {
     const id = gameId || +this.route.snapshot.paramMap.get('id');
 
     this.gameService.getGame(id)
-      .subscribe((game: Game) => this.game = game);
+      .subscribe((game: Game) => this.game = game, error => {
+        if (error && error.status == 404) {
+          this.router.navigate(['not-found']);
+        }
+      });
   }
 
   get currentMove(): Move {
@@ -73,7 +81,7 @@ export class GameComponent implements OnInit {
     return result;
   }
 
-  onSignClicked(event: any, sign: HandSign) {
+  onSignClicked(sign: HandSign) {
     this.moving = true;
     this.gameService.makeMove(this.game.id, sign)
       .subscribe((game: Game) => {
@@ -82,22 +90,15 @@ export class GameComponent implements OnInit {
       });
   }
 
-  getCurrentMove(): Move {
-    const lastRound = Math.max(...this.game.moves.map(move => move.round));
-    return this.game.moves.find(move => move.round === lastRound);
-  }
-
   restartGame(): void {
     if (this.game.state === GameState.Started) {
-      this.gameService.abortGame(this.game.id).subscribe(() => {
-        this.startNewGame();
-      });
+      this.abortGame(true);
     } else {
-      this.startNewGame();
+      this.restartNewGame();
     }
   }
 
-  private startNewGame() {
+  private restartNewGame() {
     const newGame = {
       mode: this.game.mode.toString(),
       bestOfRounds: this.game.bestOfRounds
@@ -112,11 +113,31 @@ export class GameComponent implements OnInit {
 
   newGame(): void {
     if (this.game.state === GameState.Started) {
-      this.gameService.abortGame(this.game.id).subscribe(() => {
-        this.router.navigate(['start']);
-      });
+      this.abortGame(false);
     } else {
       this.router.navigate(['start']);
     }
+  }
+
+  private abortGame(isRestart: boolean) {
+    const dialogRef = this.confirmDialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        dialogTitle: 'Abort this game?',
+        confirmText: 'This game is not lost yet. Do you really want to abort it?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((abortConfirmed: boolean) => {
+      if (abortConfirmed) {
+        this.gameService.abortGame(this.game.id).subscribe(() => {
+          if (isRestart) {
+            this.restartNewGame();
+          } else {
+            this.router.navigate(['start']);
+          }
+        });
+      }
+    });
   }
 }

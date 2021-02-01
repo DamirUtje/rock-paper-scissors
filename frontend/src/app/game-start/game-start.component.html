@@ -40,7 +40,7 @@
           </div>
           <div class="row-wrapper">
             <div>
-              <button mat-mini-fab [disabled]="canReduceRounds()" (click)="onRoundsReduce($event)">
+              <button mat-mini-fab [disabled]="canReduceRounds()" (click)="onRoundsReduce()">
                 <mat-icon>remove</mat-icon>
               </button>
             </div>
@@ -48,7 +48,7 @@
               {{ bestOfRounds }}
             </div>
             <div>
-              <button mat-mini-fab [disabled]="canIncreaseRounds()" (click)="onRoundsIncrease($event)">
+              <button mat-mini-fab [disabled]="canIncreaseRounds()" (click)="onRoundsIncrease()">
                 <mat-icon>add</mat-icon>
               </button>
             </div>
@@ -63,7 +63,7 @@
     class="btn-wrapper"
     mat-raised-button
     color="accent"
-    (click)="startGame($event, selectedMode)">
+    (click)="startGame(selectedMode)">
     Start Game
     </button>
   </div>

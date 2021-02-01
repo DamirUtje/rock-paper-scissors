@@ -166,7 +166,7 @@ public class GameServiceImpl implements GameService {
         if (userSign.isBetterThan(botSign)) {
             result = MoveResult.Win;
         } else if(botSign.isBetterThan(userSign)) {
-            result = MoveResult.Loose;
+            result = MoveResult.Lose;
         }
         return result;
     }

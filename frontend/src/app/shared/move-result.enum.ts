@@ -1,7 +1,7 @@
 
 export enum MoveResult {
   Win = '🙂',
-  Loose = '🙁',
+  Lose = '🙁',
   Draw = '😐',
   None = -1,
 }

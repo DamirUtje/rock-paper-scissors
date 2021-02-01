@@ -1,11 +1,12 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
+import { catchError } from 'rxjs/operators';
 import { environment } from "../../environments/environment";
 import { GameStartDto } from "./game-start-dto.model";
 import { Game } from "./game.model";
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class GameService {
 
   private gameUrl = `${environment.baseUrl}/game`;  // URL to web api
@@ -31,7 +32,7 @@ export class GameService {
   }
 
   /** Make move for given game */
-  makeMove(id: number, handSign: string | number): Observable<Game> {
+  makeMove(id: number, handSign: string): Observable<Game> {
     return this.http.post<Game>(`${this.gameUrl}/${id}/move`, JSON.stringify(handSign), this.httpOptions);
   }
 

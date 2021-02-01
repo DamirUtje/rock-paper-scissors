@@ -167,7 +167,7 @@ public class GameControllerTest {
 
         assertThat(gameAfterMove.getMode())
                 .withFailMessage("Mode of started game should be 'Classic'")
-                .isEqualTo(GameMode.Classic);
+                .isEqualTo(GameMode.Expanded);
 
         assertThat(gameAfterMove.getMoves())
                 .withFailMessage("Game should have 1 move")

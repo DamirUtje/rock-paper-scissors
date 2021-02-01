@@ -28,7 +28,7 @@ export class GameStartComponent implements OnInit {
     this.selectedMode = event.value;
   }
 
-  onRoundsReduce(event: any) {
+  onRoundsReduce() {
     const rounds = this.bestOfRounds - 2;
     if (rounds >= 1) {
       this.bestOfRounds = rounds;
@@ -39,7 +39,7 @@ export class GameStartComponent implements OnInit {
     return this.bestOfRounds <= 1;
   }
 
-  onRoundsIncrease(event: any) {
+  onRoundsIncrease() {
     const rounds = this.bestOfRounds + 2;
     if (rounds <= this.maxRounds) {
       this.bestOfRounds = rounds;
@@ -60,7 +60,7 @@ export class GameStartComponent implements OnInit {
     return description;
   }
 
-  startGame(event: any, mode: GameMode) {
+  startGame(mode: GameMode) {
     const game = {
       mode: `${mode}`,
       bestOfRounds: this.bestOfRounds

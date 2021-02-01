@@ -17,13 +17,17 @@ import { GameStartComponent } from './game-start/game-start.component';
 //import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { InfoDialogComponent } from './info-dialog/info-dialog.component';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GameComponent,
     GameStartComponent,
-    InfoDialogComponent
+    InfoDialogComponent,
+    ConfirmDialogComponent,
+    NotFoundPageComponent
   ],
   imports: [
     BrowserModule,
