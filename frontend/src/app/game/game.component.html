@@ -20,10 +20,11 @@
     </div>
   </div>
 
-  <div >Best-of-{{game.bestOfRounds}} rounds</div>
+  <div *ngIf="game.state == states.Aborted" style="margin: 20px;">This game has been aborted</div>
 
-  <div *ngIf="!moving && game.state == states.Started">
-    <div class="mat-h2" style="text-align: center;">Choose a hand sign:</div>
+  <div *ngIf="!moving && game.state == states.Started" style="text-align: center;">
+    <div>Best-of-{{game.bestOfRounds}} rounds</div>
+    <div class="mat-h2">Choose a hand sign:</div>
     <div class="row-wrapper">
       <span *ngFor="let sign of game.availableSigns">
         <button
