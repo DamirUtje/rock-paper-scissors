@@ -19,9 +19,6 @@ public class Game {
     @NotNull
     private  GameState state;
 
-    @Transient
-    private HandSign[] availableSigns;
-
     public Game() {
         super();
     }
@@ -58,12 +55,12 @@ public class Game {
     }
 
     public HandSign[] getAvailableSigns() {
-        this.availableSigns = HandSign.values();
+        HandSign[] availableSigns = HandSign.values();
 
         if (this.mode == GameMode.Classic) {
-            this.availableSigns = ArrayUtils.removeElement(availableSigns, HandSign.Well);
+            availableSigns = ArrayUtils.removeElement(availableSigns, HandSign.Well);
         }
-        return this.availableSigns;
+        return availableSigns;
     }
 
     @Override

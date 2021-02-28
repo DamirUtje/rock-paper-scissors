@@ -11,15 +11,12 @@ export interface DialogData {
   templateUrl: './confirm-dialog.component.html',
   styleUrls: ['./confirm-dialog.component.scss']
 })
-export class ConfirmDialogComponent implements OnInit {
+export class ConfirmDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-    ) { }
-
-  ngOnInit(): void {
-  }
+  ) { }
 
   onCancelClick() {
     this.dialogRef.close();

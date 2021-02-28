@@ -1,15 +1,15 @@
 import { trigger, style, transition, animate } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { GameStartDto } from '../shared/game-start-dto.model';
-import { GameState } from '../shared/game-state.enum';
-import { Game } from '../shared/game.model';
-import { GameService } from '../shared/game.service';
-import { HandSign } from '../shared/hand-sign.enum';
-import { MoveResult } from '../shared/move-result.enum';
-import { Move } from '../shared/move.model';
+import { GameStartDto } from '../_model/game-start-dto.model';
+import { GameState } from '../_model/game-state.enum';
+import { Game } from '../_model/game.model';
+import { GameService } from '../_service/game.service';
+import { HandSign } from '../_model/hand-sign.enum';
+import { MoveResult } from '../_model/move-result.enum';
+import { Move } from '../_model/move.model';
 
 @Component({
   selector: 'app-game',
@@ -30,7 +30,7 @@ import { Move } from '../shared/move.model';
     ])
   ]
 })
-export class GameComponent implements OnInit {
+export class GameComponent {
 
   readonly signs = HandSign;
   readonly results = MoveResult;
@@ -49,9 +49,6 @@ export class GameComponent implements OnInit {
       const id = params['id'];
       this.getGame(id);
     });
-  }
-
-  ngOnInit(): void {
   }
 
   private getGame(gameId?: number): void {

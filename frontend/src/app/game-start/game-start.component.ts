@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { GameMode } from '../shared/game-mode.enum';
-import { GameStartDto } from '../shared/game-start-dto.model';
-import { GameService } from '../shared/game.service';
+import { GameMode } from '../_model/game-mode.enum';
+import { GameStartDto } from '../_model/game-start-dto.model';
+import { GameService } from '../_service/game.service';
 
 @Component({
   selector: 'app-game-start',
   templateUrl: './game-start.component.html',
   styleUrls: ['./game-start.component.scss']
 })
-export class GameStartComponent implements OnInit {
+export class GameStartComponent {
 
   bestOfRounds = 3;
   readonly maxRounds = 5;
@@ -19,10 +19,7 @@ export class GameStartComponent implements OnInit {
   constructor(
     private gameService: GameService,
     private router: Router,
-    ) { }
-
-  ngOnInit(): void {
-  }
+  ) { }
 
   onModeChange(event: any) {
     this.selectedMode = event.value;

@@ -22,7 +22,7 @@
 
   <div *ngIf="game.state == states.Aborted" style="margin: 20px;">This game has been aborted</div>
 
-  <div *ngIf="!moving && game.state == states.Started" style="text-align: center;">
+  <div *ngIf="!moving && game.state == states.Started" class="text-centered">
     <div>Best-of-{{game.bestOfRounds}} rounds</div>
     <div class="mat-h2">Choose a hand sign:</div>
     <div class="row-wrapper">
@@ -39,7 +39,7 @@
     </div>
 </div>
 
-  <div *ngIf="currentMove && moving" class="row-wrapper" style="align-items: center;">
+  <div *ngIf="currentMove && moving" class="row-wrapper" class="items-centered">
     <div class="move" [@slideInMe]>{{ signs[currentMove.userSign] }}</div>
     <div>
       <p class="mat-h2">{{ currentResult }}! {{ results[currentResult] }}</p>

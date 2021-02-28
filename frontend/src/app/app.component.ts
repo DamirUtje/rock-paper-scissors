@@ -9,11 +9,11 @@ import { InfoDialogComponent } from './info-dialog/info-dialog.component';
 })
 export class AppComponent {
 
-  constructor(public dialog: MatDialog) { }
+  constructor(private dialog: MatDialog) { }
 
   openInfoDialog(): void {
     this.dialog.open(InfoDialogComponent, {
-      width: '450px',
+      width: '300px',
     });
   }
 }

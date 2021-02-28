@@ -1,10 +1,9 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
-import { catchError } from 'rxjs/operators';
 import { environment } from "../../environments/environment";
-import { GameStartDto } from "./game-start-dto.model";
-import { Game } from "./game.model";
+import { GameStartDto } from "../_model/game-start-dto.model";
+import { Game } from "../_model/game.model";
 
 @Injectable()
 export class GameService {
