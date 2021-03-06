@@ -7,7 +7,6 @@ import de.damirutje.rockpaperscissors.exception.InvalidGameMoveException;
 import de.damirutje.rockpaperscissors.exception.InvalidGameSettingsException;
 import de.damirutje.rockpaperscissors.model.*;
 import de.damirutje.rockpaperscissors.repository.GameRepository;
-import de.damirutje.rockpaperscissors.repository.MoveRepository;
 import de.damirutje.rockpaperscissors.utils.GameHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,14 +17,13 @@ import java.util.stream.Collectors;
 public class GameServiceImpl implements GameService {
 
     private final GameRepository gameRepository;
-    private final MoveRepository moveRepository;
+
     private static final GameMode defaultGameMode = GameMode.Classic;
     private static final int defaultBestOfRounds = 3;
 
     @Autowired
-    public GameServiceImpl(GameRepository gameRepository, MoveRepository moveRepository) {
+    public GameServiceImpl(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
-        this.moveRepository = moveRepository;
     }
 
     @Override
@@ -156,7 +154,6 @@ public class GameServiceImpl implements GameService {
         HandSign botSign = GameHelper.getBotSign(game);
         MoveResult result = GameHelper.getMoveResult(userSign, botSign);
         Move move = new Move(userSign, botSign, result);
-        this.moveRepository.save(move);
         return move;
     }
 }

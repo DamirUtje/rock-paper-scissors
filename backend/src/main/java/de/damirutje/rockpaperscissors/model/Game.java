@@ -1,6 +1,7 @@
 package de.damirutje.rockpaperscissors.model;
 
 import org.apache.commons.lang3.ArrayUtils;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.*;
@@ -14,7 +15,7 @@ public class Game {
     @NotNull
     private GameMode mode;
     private int bestOfRounds;
-    @ElementCollection(fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Move> moves;
     @NotNull
     private  GameState state;
