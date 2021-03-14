@@ -1,5 +1,6 @@
 ﻿using RockPaperScissors.Core.Dtos;
 using RockPaperScissors.Core.Entities;
+using RockPaperScissors.Core.Exceptions;
 using RockPaperScissors.Core.Interfaces;
 using System.Threading.Tasks;
 
@@ -19,6 +20,7 @@ namespace RockPaperScissors.Core.Services
             Game game = new Game(GameMode.Classic, 3);
             if (gameStart != null)
             {
+                ValidateSettings(gameStart);
                 game.Mode = gameStart.Mode;
                 game.BestOfRounds = gameStart.BestOfRounds;
             }
@@ -26,19 +28,39 @@ namespace RockPaperScissors.Core.Services
             return game;
         }
 
-        public async Task<Game> GetGame(int id)
+        private void ValidateSettings(GameStartDto gameStart)
         {
-            return await _repository.GetByIdAsync<Game>(id);
+            if (gameStart.BestOfRounds <= 0)
+            {
+                throw new InvalidGameSettingsException("Game rounds must be higher than 0.");
+            }
+
+            if (gameStart.BestOfRounds % 2 == 0)
+            {
+                throw new InvalidGameSettingsException("Game settings must have odd number of rounds.");
+            }
         }
 
-        public Task<Game> MakeMove(int id, HandSign handSign)
+        public async Task<Game> GetGame(int id)
         {
-            throw new System.NotImplementedException();
+            var game = await _repository.GetByIdAsync<Game>(id);
+            if (game == null)
+            {
+                throw new GameNotExistsException($"Game with id '{id}' does not exist.");
+            }
+            return game;
+        }
+
+        public async Task<Game> MakeMove(int id, HandSign handSign)
+        {
+            var game = await GetGame(id);
+            // todo
+            return game;
         }
 
         public async Task AbortGame(int id)
         {
-            Game game = await _repository.GetByIdAsync<Game>(id);
+            Game game = await GetGame(id);
             game.State = GameState.Aborted;
             await _repository.UpdateAsync(game);
         }
