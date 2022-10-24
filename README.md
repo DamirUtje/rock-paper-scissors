@@ -1,6 +1,6 @@
 # Rock-Paper-Scissors
 
-This repository contains an implementation of the Rock-Paper-Scissors game. Its backend provides a RESTful API service which is based on Spring Boot 2.4.2. The programming language is Java 11 and the build tool is Maven. The associated frontend is implemented with Angular Matrial 11.1.
+This repository represents a web-based rock-paper-scissors game. The goal was to contrast Java and .NET technologies as well as backend architecture best practices. The Java backend provides a RESTful API service which is based on Spring Boot 2.4.2. Framework version is 11 and the build tool is Maven. C# backend is implemented in .NET Core5. The associated frontend is implemented with Angular Matrial 11.1.
 
 ## Rules and settings
 
